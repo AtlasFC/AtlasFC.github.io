@@ -38,6 +38,7 @@
 
         section {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -45,6 +46,11 @@
 
         canvas {
             border: 1px solid #FFD700;
+        }
+
+        #message {
+            font-size: 24px;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -63,6 +69,7 @@
 
     <section>
         <canvas id="game-board" width="400" height="400"></canvas>
+        <div id="message"></div>
     </section>
 
     <script>
@@ -71,6 +78,8 @@
         const cellSize = 20;
         let snake = [{ x: 10, y: 10 }];
         let direction = 'right';
+        let fruit = { x: 15, y: 15 };
+        let isGameOver = false;
 
         function drawSnake() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -81,7 +90,14 @@
             });
         }
 
+        function drawFruit() {
+            ctx.fillStyle = 'red';
+            ctx.fillRect(fruit.x * cellSize, fruit.y * cellSize, cellSize, cellSize);
+        }
+
         function moveSnake() {
+            if (isGameOver) return;
+
             const head = { ...snake[0] };
 
             switch (direction) {
@@ -99,11 +115,37 @@
                     break;
             }
 
+            // Verifica se a cobra colidiu com a borda ou consigo mesma
+            if (head.x < 0 || head.x >= canvas.width / cellSize || head.y < 0 || head.y >= canvas.height / cellSize || isCollision(head)) {
+                isGameOver = true;
+                document.getElementById('message').innerText = 'Você perdeu! Pressione "R" para recomeçar.';
+                return;
+            }
+
             snake.unshift(head);
-            snake = snake.slice(0, 1); // Mantém apenas a cabeça da cobra
+
+            // Verifica se a cobra colidiu com a fruta
+            if (head.x === fruit.x && head.y === fruit.y) {
+                // Gera uma nova posição para a fruta
+                fruit = {
+                    x: Math.floor(Math.random() * (canvas.width / cellSize)),
+                    y: Math.floor(Math.random() * (canvas.height / cellSize))
+                };
+            } else {
+                // Remove o último segmento da cobra se não comeu a fruta
+                snake.pop();
+            }
+        }
+
+        function isCollision(head) {
+            return snake.slice(1).some(segment => segment.x === head.x && segment.y === head.y);
         }
 
         function handleKeyPress(event) {
+            if (event.key === 'r' || event.key === 'R') {
+                restartGame();
+            }
+
             switch (event.key) {
                 case 'ArrowUp':
                     direction = 'up';
@@ -122,12 +164,31 @@
 
         function gameLoop() {
             moveSnake();
+            drawFruit();
             drawSnake();
+        }
+
+        function restartGame() {
+            snake = [{ x: 10, y: 10 }];
+            direction = 'right';
+            fruit = { x: 15, y: 15 };
+            isGameOver = false;
+            document.getElementById('message').innerText = '';
         }
 
         document.addEventListener('keydown', handleKeyPress);
 
         setInterval(gameLoop, 200);
+
+        // Atualiza o tamanho do canvas para ajustar à tela do dispositivo
+        function updateCanvasSize() {
+            canvas.width = window.innerWidth - 20;
+            canvas.height = window.innerHeight - 60;
+        }
+
+        // Adiciona evento de redimensionamento para ajustar o tamanho do canvas
+        window.addEventListener('resize', updateCanvasSize);
+        updateCanvasSize(); // Chama a função para definir o tamanho inicial
     </script>
 </body>
 </html>
