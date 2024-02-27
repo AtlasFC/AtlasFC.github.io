@@ -69,7 +69,7 @@
         const canvas = document.getElementById('game-board');
         const ctx = canvas.getContext('2d');
         const cellSize = 20;
-        const snake = [{ x: 10, y: 10 }];
+        let snake = [{ x: 10, y: 10 }];
         let direction = 'right';
 
         function drawSnake() {
@@ -100,6 +100,7 @@
             }
 
             snake.unshift(head);
+            snake = snake.slice(0, 1); // Mantém apenas a cabeça da cobra
         }
 
         function handleKeyPress(event) {
