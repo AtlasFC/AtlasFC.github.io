@@ -49,6 +49,11 @@
             max-width: 100%;
             max-height: 100%;
         }
+
+        #info {
+            margin-top: 10px;
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
@@ -66,6 +71,7 @@
 
     <section>
         <canvas id="snake-game"></canvas>
+        <div id="info">Frutas Comidas: 0</div>
     </section>
 
     <script>
@@ -76,7 +82,10 @@
         let direction = 'right';
         let food = { x: 15, y: 15 };
         let intervalId;
-        const speed = 150; // Velocidade em milissegundos
+        let speed = 200; // Velocidade inicial em milissegundos
+        let fruitsEaten = 0;
+
+        const infoElement = document.getElementById('info');
 
         function drawSnake() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -126,6 +135,20 @@
                 // Aumenta o tamanho da cobra
                 const tail = { ...snake[snake.length - 1] };
                 snake.push(tail);
+
+                // Incrementa a contagem de frutas comidas
+                fruitsEaten++;
+
+                // Ajusta a velocidade da cobra após comer a terceira fruta
+                if (fruitsEaten === 3) {
+                    speed -= 30; // Diminui o intervalo, tornando o movimento mais rápido
+                    clearInterval(intervalId);
+                    intervalId = setInterval(gameLoop, speed);
+                    fruitsEaten = 0; // Reinicia a contagem de frutas comidas
+                }
+
+                // Atualiza a informação na tela
+                updateInfo();
             } else {
                 // Remove o último segmento da cobra se não comeu a fruta
                 snake.pop();
@@ -161,7 +184,10 @@
             snake = [{ x: 10, y: 10 }];
             direction = 'right';
             food = generateFoodPosition();
+            speed = 200;
+            fruitsEaten = 0;
             intervalId = setInterval(gameLoop, speed);
+            updateInfo();
         }
 
         function handleKeyPress(event) {
@@ -185,6 +211,10 @@
             moveSnake();
             drawSnake();
             drawFood();
+        }
+
+        function updateInfo() {
+            infoElement.textContent = `Frutas Comidas: ${fruitsEaten}`;
         }
 
         // Configurações iniciais
