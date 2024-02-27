@@ -78,6 +78,7 @@
         const canvas = document.getElementById('snake-game');
         const ctx = canvas.getContext('2d');
         const cellSize = 20;
+        const touchControls = { left: false, up: false, right: false, down: false };
         let snake = [{ x: 10, y: 10 }];
         let direction = 'right';
         let food = { x: 15, y: 15 };
@@ -178,6 +179,7 @@
             food = generateFoodPosition();
             fruitsEaten = 0;
             updateInfo();
+            intervalId = setInterval(gameLoop, speed);
         }
 
         function handleKeyPress(event) {
@@ -197,7 +199,34 @@
             }
         }
 
+        function handleTouchStart(event) {
+            event.preventDefault();
+
+            const touch = event.touches[0];
+            const x = touch.clientX;
+            const y = touch.clientY;
+
+            // Definir os controles de toque com base na posição inicial do toque
+            touchControls.left = x < window.innerWidth / 3;
+            touchControls.right = x > (window.innerWidth / 3) * 2;
+            touchControls.up = y < window.innerHeight / 2;
+            touchControls.down = y > window.innerHeight / 2;
+        }
+
+        function handleTouchEnd(event) {
+            event.preventDefault();
+
+            // Restaurar os controles de toque ao estado inicial
+            touchControls.left = touchControls.up = touchControls.right = touchControls.down = false;
+        }
+
         function gameLoop() {
+            // Atualizar a direção com base nos controles de toque
+            if (touchControls.left) direction = 'left';
+            if (touchControls.up) direction = 'up';
+            if (touchControls.right) direction = 'right';
+            if (touchControls.down) direction = 'down';
+
             moveSnake();
             drawSnake();
             drawFood();
@@ -208,9 +237,11 @@
         }
 
         // Configurações iniciais
-        canvas.width = 400;
-        canvas.height = 400;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
         window.addEventListener('keydown', handleKeyPress);
+        canvas.addEventListener('touchstart', handleTouchStart);
+        canvas.addEventListener('touchend', handleTouchEnd);
         intervalId = setInterval(gameLoop, speed);
     </script>
 </body>
