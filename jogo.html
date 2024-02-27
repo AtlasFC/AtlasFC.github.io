@@ -46,13 +46,23 @@
 
         canvas {
             border: 1px solid #FFD700;
-            max-width: 100%;
-            max-height: 100%;
+            max-width: 80vw;
+            max-height: 80vh;
         }
 
         #info {
             margin-top: 10px;
             font-size: 18px;
+        }
+
+        #replay-btn {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #333;
+            color: #FFD700;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
         }
     </style>
 </head>
@@ -72,6 +82,7 @@
     <section>
         <canvas id="snake-game"></canvas>
         <div id="info">Frutas Comidas: 0</div>
+        <button id="replay-btn" style="display:none;" onclick="resetGame()">Recomeçar</button>
     </section>
 
     <script>
@@ -87,6 +98,7 @@
         let fruitsEaten = 0;
 
         const infoElement = document.getElementById('info');
+        const replayBtn = document.getElementById('replay-btn');
 
         function drawSnake() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -170,7 +182,7 @@
 
         function endGame() {
             clearInterval(intervalId);
-            resetGame();
+            replayBtn.style.display = 'block';
         }
 
         function resetGame() {
@@ -179,6 +191,7 @@
             food = generateFoodPosition();
             fruitsEaten = 0;
             updateInfo();
+            replayBtn.style.display = 'none';
             intervalId = setInterval(gameLoop, speed);
         }
 
@@ -237,8 +250,8 @@
         }
 
         // Configurações iniciais
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth * 0.8;
+        canvas.height = window.innerHeight * 0.8;
         window.addEventListener('keydown', handleKeyPress);
         canvas.addEventListener('touchstart', handleTouchStart);
         canvas.addEventListener('touchend', handleTouchEnd);
