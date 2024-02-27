@@ -50,9 +50,16 @@
             max-height: 100%;
         }
 
-        #score {
-            font-size: 24px;
+        #score-table {
             margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #score-table th, #score-table td {
+            border: 1px solid #FFD700;
+            padding: 8px;
+            text-align: center;
         }
     </style>
 </head>
@@ -71,7 +78,17 @@
 
     <section>
         <canvas id="snake-game"></canvas>
-        <div id="score">Pontuação: 0</div>
+        <table id="score-table">
+            <thead>
+                <tr>
+                    <th>Jogador</th>
+                    <th>Pontuação</th>
+                </tr>
+            </thead>
+            <tbody id="score-body">
+                <!-- Aqui serão adicionadas as linhas da tabela dinamicamente -->
+            </tbody>
+        </table>
     </section>
 
     <script>
@@ -82,6 +99,8 @@
         let direction = 'right';
         let food = { x: 15, y: 15 };
         let score = 0;
+        let intervalId;
+        const speed = 100; // Velocidade em milissegundos
 
         function drawSnake() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -161,7 +180,9 @@
         }
 
         function endGame() {
-            alert(`Fim de jogo! Pontuação: ${score}`);
+            clearInterval(intervalId);
+            const playerName = prompt('Fim de jogo! Digite seu nome:');
+            updateScoreTable(playerName);
             resetGame();
         }
 
@@ -170,6 +191,7 @@
             direction = 'right';
             food = generateFoodPosition();
             score = 0;
+            intervalId = setInterval(gameLoop, speed);
         }
 
         function handleKeyPress(event) {
@@ -189,11 +211,20 @@
             }
         }
 
+        function updateScoreTable(playerName) {
+            const scoreTable = document.getElementById('score-body');
+            const newRow = scoreTable.insertRow(0);
+            const playerNameCell = newRow.insertCell(0);
+            const scoreCell = newRow.insertCell(1);
+
+            playerNameCell.textContent = playerName || 'Anônimo';
+            scoreCell.textContent = score;
+        }
+
         function gameLoop() {
             moveSnake();
             drawSnake();
             drawFood();
-            requestAnimationFrame(gameLoop);
         }
 
         // Configurações iniciais
@@ -201,7 +232,6 @@
         canvas.height = 400;
         window.addEventListener('keydown', handleKeyPress);
         resetGame();
-        gameLoop();
     </script>
 </body>
 </html>
