@@ -82,7 +82,7 @@
         let direction = 'right';
         let food = { x: 15, y: 15 };
         let intervalId;
-        let speed = 200; // Velocidade inicial em milissegundos
+        let speed = 200; // Velocidade constante em milissegundos
         let fruitsEaten = 0;
 
         const infoElement = document.getElementById('info');
@@ -136,13 +136,6 @@
                 const tail = { ...snake[snake.length - 1] };
                 snake.push(tail);
 
-                // Ajusta a velocidade da cobra apenas nas primeiras 5 frutas
-                if (fruitsEaten < 5) {
-                    speed -= 80; // Diminui o intervalo, tornando o movimento mais rápido
-                    clearInterval(intervalId);
-                    intervalId = setInterval(gameLoop, speed);
-                }
-
                 // Incrementa a contagem de frutas comidas
                 fruitsEaten++;
 
@@ -183,9 +176,7 @@
             snake = [{ x: 10, y: 10 }];
             direction = 'right';
             food = generateFoodPosition();
-            speed = 200;
             fruitsEaten = 0;
-            intervalId = setInterval(gameLoop, speed);
             updateInfo();
         }
 
@@ -220,7 +211,7 @@
         canvas.width = 400;
         canvas.height = 400;
         window.addEventListener('keydown', handleKeyPress);
-        resetGame();
+        intervalId = setInterval(gameLoop, speed);
     </script>
 </body>
 </html>
