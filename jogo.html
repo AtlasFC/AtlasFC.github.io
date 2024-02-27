@@ -139,12 +139,11 @@
                 // Incrementa a contagem de frutas comidas
                 fruitsEaten++;
 
-                // Ajusta a velocidade da cobra após comer a terceira fruta
-                if (fruitsEaten === 3) {
+                // Ajusta a velocidade da cobra após comer a quinta fruta
+                if (fruitsEaten % 5 === 0) {
                     speed -= 30; // Diminui o intervalo, tornando o movimento mais rápido
                     clearInterval(intervalId);
                     intervalId = setInterval(gameLoop, speed);
-                    fruitsEaten = 0; // Reinicia a contagem de frutas comidas
                 }
 
                 // Atualiza a informação na tela
