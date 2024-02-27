@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo - Atlas FC</title>
+    <title>Jogos - Atlas FC</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,7 +11,6 @@
             padding: 0;
             background-color: #1E1E1E; /* Preto */
             color: #FFD700; /* Amarelo escuro */
-            overflow: hidden; /* Impede a barra de rolagem */
         }
 
         header {
@@ -44,10 +43,22 @@
             height: 100vh;
         }
 
-        canvas {
-            border: 1px solid #FFD700;
-            max-width: 100%;
-            max-height: 100%;
+        #memory-game {
+            display: grid;
+            grid-template-columns: repeat(4, 100px);
+            gap: 10px;
+        }
+
+        .card {
+            width: 100px;
+            height: 100px;
+            background-color: #333;
+            color: #FFD700;
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
         }
 
         #message {
@@ -58,7 +69,7 @@
 </head>
 <body>
     <header>
-        <h1>Atlas Futebol Clube - Jogo</h1>
+        <h1>Atlas Futebol Clube - Jogos</h1>
     </header>
 
     <nav>
@@ -66,131 +77,85 @@
         <a class="nav-link" href="#sobre">Sobre</a>
         <a class="nav-link" href="calendario.html">Calendário</a>
         <a class="nav-link" href="contato_equipe.html">Contato da Equipe</a>
-        <a class="nav-link" href="jogo.html">Jogo</a>
+        <a class="nav-link" href="jogo.html">Jogos</a>
     </nav>
 
     <section>
-        <canvas id="game-board"></canvas>
+        <div id="memory-game"></div>
         <div id="message"></div>
     </section>
 
     <script>
-        const canvas = document.getElementById('game-board');
-        const ctx = canvas.getContext('2d');
-        const cellSize = 20;
-        let snake = [{ x: 10, y: 10 }];
-        let direction = 'right';
-        let fruit = { x: 15, y: 15 };
+        const memoryGame = document.getElementById('memory-game');
+        const messageDiv = document.getElementById('message');
+        let cards = ['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D', 'E', 'E', 'F', 'F', 'G', 'G', 'H', 'H'];
+        let flippedCards = [];
+        let matchedPairs = 0;
         let isGameOver = false;
 
-        function drawSnake() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            snake.forEach(segment => {
-                ctx.fillStyle = '#FFD700';
-                ctx.fillRect(segment.x * cellSize, segment.y * cellSize, cellSize, cellSize);
-            });
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
         }
 
-        function drawFruit() {
-            ctx.fillStyle = 'red';
-            ctx.fillRect(fruit.x * cellSize, fruit.y * cellSize, cellSize, cellSize);
+        function createCard(letter) {
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.innerText = letter;
+            card.addEventListener('click', () => flipCard(card));
+            return card;
         }
 
-        function moveSnake() {
-            if (isGameOver) return;
+        function createBoard() {
+            shuffleArray(cards);
 
-            const head = { ...snake[0] };
-
-            switch (direction) {
-                case 'up':
-                    head.y--;
-                    break;
-                case 'down':
-                    head.y++;
-                    break;
-                case 'left':
-                    head.x--;
-                    break;
-                case 'right':
-                    head.x++;
-                    break;
+            for (const letter of cards) {
+                const card = createCard(letter);
+                memoryGame.appendChild(card);
             }
+        }
 
-            // Verifica se a cobra colidiu com a borda ou consigo mesma
-            if (head.x < 0 || head.x >= canvas.width / cellSize || head.y < 0 || head.y >= canvas.height / cellSize || isCollision(head)) {
-                isGameOver = true;
-                document.getElementById('message').innerText = 'Você perdeu! Pressione "R" para recomeçar.';
-                return;
+        function flipCard(card) {
+            if (isGameOver || card.classList.contains('flipped')) return;
+
+            card.classList.add('flipped');
+            flippedCards.push(card);
+
+            if (flippedCards.length === 2) {
+                setTimeout(checkMatch, 500);
             }
+        }
 
-            snake.unshift(head);
+        function checkMatch() {
+            const [card1, card2] = flippedCards;
 
-            // Verifica se a cobra colidiu com a fruta
-            if (head.x === fruit.x && head.y === fruit.y) {
-                // Gera uma nova posição para a fruta
-                fruit = {
-                    x: Math.floor(Math.random() * (canvas.width / cellSize)),
-                    y: Math.floor(Math.random() * (canvas.height / cellSize))
-                };
+            if (card1.innerText === card2.innerText) {
+                card1.removeEventListener('click', () => flipCard(card1));
+                card2.removeEventListener('click', () => flipCard(card2));
+
+                flippedCards = [];
+                matchedPairs++;
+
+                if (matchedPairs === cards.length / 2) {
+                    endGame();
+                }
             } else {
-                // Remove o último segmento da cobra se não comeu a fruta
-                snake.pop();
+                setTimeout(() => {
+                    card1.classList.remove('flipped');
+                    card2.classList.remove('flipped');
+                    flippedCards = [];
+                }, 500);
             }
         }
 
-        function isCollision(head) {
-            return snake.slice(1).some(segment => segment.x === head.x && segment.y === head.y);
+        function endGame() {
+            isGameOver = true;
+            messageDiv.innerText = 'Parabéns! Você encontrou todos os pares.';
         }
 
-        function handleKeyPress(event) {
-            if (event.key === 'r' || event.key === 'R') {
-                restartGame();
-            }
-
-            switch (event.key) {
-                case 'ArrowUp':
-                    direction = 'up';
-                    break;
-                case 'ArrowDown':
-                    direction = 'down';
-                    break;
-                case 'ArrowLeft':
-                    direction = 'left';
-                    break;
-                case 'ArrowRight':
-                    direction = 'right';
-                    break;
-            }
-        }
-
-        function gameLoop() {
-            moveSnake();
-            drawFruit();
-            drawSnake();
-        }
-
-        function restartGame() {
-            snake = [{ x: 10, y: 10 }];
-            direction = 'right';
-            fruit = { x: 15, y: 15 };
-            isGameOver = false;
-            document.getElementById('message').innerText = '';
-        }
-
-        document.addEventListener('keydown', handleKeyPress);
-
-        setInterval(gameLoop, 200);
-
-        // Atualiza o tamanho do canvas para ajustar à tela do dispositivo
-        function updateCanvasSize() {
-            canvas.width = window.innerWidth - 20;
-            canvas.height = window.innerHeight - 60;
-        }
-
-        // Adiciona evento de redimensionamento para ajustar o tamanho do canvas
-        window.addEventListener('resize', updateCanvasSize);
-        updateCanvasSize(); // Chama a função para definir o tamanho inicial
+        createBoard();
     </script>
 </body>
 </html>
