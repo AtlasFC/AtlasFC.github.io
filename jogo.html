@@ -49,18 +49,6 @@
             max-width: 100%;
             max-height: 100%;
         }
-
-        #score-table {
-            margin-top: 20px;
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        #score-table th, #score-table td {
-            border: 1px solid #FFD700;
-            padding: 8px;
-            text-align: center;
-        }
     </style>
 </head>
 <body>
@@ -78,17 +66,6 @@
 
     <section>
         <canvas id="snake-game"></canvas>
-        <table id="score-table">
-            <thead>
-                <tr>
-                    <th>Jogador</th>
-                    <th>Pontuação</th>
-                </tr>
-            </thead>
-            <tbody id="score-body">
-                <!-- Aqui serão adicionadas as linhas da tabela dinamicamente -->
-            </tbody>
-        </table>
     </section>
 
     <script>
@@ -98,9 +75,8 @@
         let snake = [{ x: 10, y: 10 }];
         let direction = 'right';
         let food = { x: 15, y: 15 };
-        let score = 0;
         let intervalId;
-        const speed = 70; // Velocidade em milissegundos
+        const speed = 150; // Velocidade em milissegundos
 
         function drawSnake() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -147,9 +123,6 @@
                 // Gera uma nova posição para a fruta
                 food = generateFoodPosition();
 
-                // Aumenta a pontuação
-                score++;
-
                 // Aumenta o tamanho da cobra
                 const tail = { ...snake[snake.length - 1] };
                 snake.push(tail);
@@ -181,8 +154,6 @@
 
         function endGame() {
             clearInterval(intervalId);
-            const playerName = prompt('Você Morreu! Digite seu nome:');
-            updateScoreTable(playerName);
             resetGame();
         }
 
@@ -190,7 +161,6 @@
             snake = [{ x: 10, y: 10 }];
             direction = 'right';
             food = generateFoodPosition();
-            score = 0;
             intervalId = setInterval(gameLoop, speed);
         }
 
@@ -209,16 +179,6 @@
                     direction = 'right';
                     break;
             }
-        }
-
-        function updateScoreTable(playerName) {
-            const scoreTable = document.getElementById('score-body');
-            const newRow = scoreTable.insertRow(0);
-            const playerNameCell = newRow.insertCell(0);
-            const scoreCell = newRow.insertCell(1);
-
-            playerNameCell.textContent = playerName || 'Anônimo';
-            scoreCell.textContent = score;
         }
 
         function gameLoop() {
