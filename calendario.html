@@ -8,36 +8,26 @@
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 0;
+            padding: 20px;
             background-color: #1E1E1E; /* Preto */
             color: #FFD700; /* Amarelo escuro */
-            scroll-behavior: smooth; /* Adiciona rolagem suave */
         }
 
-        header {
-            background-color: #000;
-            color: #FFD700;
-            text-align: center;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #FFD700;
             padding: 10px;
+            text-align: left;
         }
 
-        nav {
+        th {
             background-color: #333;
             color: #FFD700;
-            text-align: center;
-            padding: 10px;
-        }
-
-        nav a {
-            color: #FFD700;
-            text-decoration: none;
-            padding: 10px;
-            margin: 0 5px;
-            cursor: pointer;
-        }
-
-        section {
-            padding: 20px;
         }
 
         footer {
@@ -49,47 +39,48 @@
             bottom: 0;
             width: 100%;
         }
+
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            text-decoration: none;
+            color: #FFD700;
+            border: 1px solid #FFD700;
+            padding: 10px;
+            width: 100px;
+            margin: 0 auto;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Atlas Futebol Clube</h1>
-    </header>
+    <h1>Calendário - Atlas FC</h1>
 
-    <nav>
-        <a class="nav-link" href="#home">Home</a>
-        <a class="nav-link" href="#sobre">Sobre</a>
-        <a class="nav-link" href="calendario.html">Calendário</a>
-        <a class="nav-link" href="#equipe">Equipe</a>
-        <a class="nav-link" href="contato_equipe.html">Contato da Equipe</a>
-    </nav>
-
-    <section id="calendario">
-        <h2>Calendário do Atlas FC</h2>
-        <!-- Adicione aqui o conteúdo do calendário -->
-        <p>Adicione aqui as informações do calendário, como partidas, datas, etc.</p>
-    </section>
+    <table>
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Adversário</th>
+                <th>Local</th>
+                <th>Resultado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>01/03/2024</td>
+                <td>Time A</td>
+                <td>Tiro de Guerra (TG)</td>
+                <td>3-1</td>
+            </tr>
+            <!-- Adicione mais linhas conforme necessário -->
+        </tbody>
+    </table>
 
     <footer>
         <p>&copy; 2024 Atlas Futebol Clube. Todos os direitos reservados.</p>
     </footer>
 
-    <script>
-        document.querySelectorAll('.nav-link').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-
-                if (this.getAttribute('href') === 'calendario.html' || this.getAttribute('href') === 'contato_equipe.html') {
-                    // Se clicar em "Calendário" ou "Contato da Equipe", redireciona para a página correspondente
-                    window.location.href = this.getAttribute('href');
-                } else {
-                    // Para outras abas, rola suavemente para a seção correspondente
-                    document.querySelector(this.getAttribute('href')).scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-    </script>
+    <a class="back-link" href="index.html">Voltar</a>
 </body>
 </html>
