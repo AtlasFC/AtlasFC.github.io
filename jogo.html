@@ -138,7 +138,7 @@
 
                 // Ajusta a velocidade da cobra apenas nas primeiras 5 frutas
                 if (fruitsEaten < 5) {
-                    speed -= 30; // Diminui o intervalo, tornando o movimento mais rápido
+                    speed -= 80; // Diminui o intervalo, tornando o movimento mais rápido
                     clearInterval(intervalId);
                     intervalId = setInterval(gameLoop, speed);
                 }
