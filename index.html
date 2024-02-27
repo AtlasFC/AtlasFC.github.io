@@ -57,10 +57,11 @@
     </header>
 
     <nav>
-        <a class="nav-link" href="index.html">Home</a>
+        <a class="nav-link" href="#home">Home</a>
         <a class="nav-link" href="#sobre">Sobre</a>
         <a class="nav-link" href="calendario.html">Calendário</a>
         <a class="nav-link" href="contato_equipe.html">Contato da Equipe</a>
+        <a class="nav-link" href="jogo.html">Jogo</a> <!-- Nova aba para o jogo -->
     </nav>
 
     <section id="home">
@@ -82,12 +83,14 @@
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
 
-                if (this.getAttribute('href') === 'index.html') {
-                    // Se clicar em "Home", redireciona para a tela inicial
-                    window.location.href = 'index.html';
-                } else if (this.getAttribute('href') === 'calendario.html' || this.getAttribute('href') === 'contato_equipe.html') {
-                    // Se clicar em "Calendário" ou "Contato da Equipe", redireciona para a página correspondente
+                if (this.getAttribute('href') === 'calendario.html' || this.getAttribute('href') === 'contato_equipe.html' || this.getAttribute('href') === 'jogo.html') {
+                    // Se clicar em "Calendário", "Contato da Equipe" ou "Jogo", redireciona para a página correspondente
                     window.location.href = this.getAttribute('href');
+                } else if (this.getAttribute('href') === '#home') {
+                    // Se clicar em "Home", rola suavemente para o topo da página
+                    document.querySelector('body').scrollIntoView({
+                        behavior: 'smooth'
+                    });
                 } else {
                     // Para outras abas, rola suavemente para a seção correspondente
                     document.querySelector(this.getAttribute('href')).scrollIntoView({
