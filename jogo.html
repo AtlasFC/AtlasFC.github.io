@@ -43,27 +43,18 @@
             height: 100vh;
         }
 
-        #memory-game {
-            display: grid;
-            grid-template-columns: repeat(4, 100px);
-            gap: 10px;
-        }
-
-        .card {
-            width: 100px;
-            height: 100px;
-            background-color: #333;
-            color: #FFD700;
-            font-size: 24px;
+        #color-sequence {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
-        #message {
-            font-size: 24px;
-            margin-top: 20px;
+        .color-button {
+            width: 50px;
+            height: 50px;
+            border: none;
+            cursor: pointer;
+            outline: none;
         }
     </style>
 </head>
@@ -81,81 +72,77 @@
     </nav>
 
     <section>
-        <div id="memory-game"></div>
+        <div id="color-sequence"></div>
+        <button id="start-button">Iniciar Jogo</button>
         <div id="message"></div>
     </section>
 
     <script>
-        const memoryGame = document.getElementById('memory-game');
+        const colorSequenceDiv = document.getElementById('color-sequence');
+        const startButton = document.getElementById('start-button');
         const messageDiv = document.getElementById('message');
-        let cards = ['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D', 'E', 'E', 'F', 'F', 'G', 'G', 'H', 'H'];
-        let flippedCards = [];
-        let matchedPairs = 0;
-        let isGameOver = false;
+        const colors = ['red', 'green', 'blue', 'yellow'];
+        const colorSequence = [];
+        let playerSequence = [];
+        let isGameOver = true;
 
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-        }
-
-        function createCard(letter) {
-            const card = document.createElement('div');
-            card.classList.add('card');
-            card.innerText = letter;
-            card.addEventListener('click', () => flipCard(card));
-            return card;
-        }
-
-        function createBoard() {
-            shuffleArray(cards);
-
-            for (const letter of cards) {
-                const card = createCard(letter);
-                memoryGame.appendChild(card);
-            }
-        }
-
-        function flipCard(card) {
-            if (isGameOver || card.classList.contains('flipped')) return;
-
-            card.classList.add('flipped');
-            flippedCards.push(card);
-
-            if (flippedCards.length === 2) {
-                setTimeout(checkMatch, 500);
-            }
-        }
-
-        function checkMatch() {
-            const [card1, card2] = flippedCards;
-
-            if (card1.innerText === card2.innerText) {
-                card1.removeEventListener('click', () => flipCard(card1));
-                card2.removeEventListener('click', () => flipCard(card2));
-
-                flippedCards = [];
-                matchedPairs++;
-
-                if (matchedPairs === cards.length / 2) {
-                    endGame();
-                }
-            } else {
+        function displayColorSequence() {
+            colorSequence.forEach((color, index) => {
                 setTimeout(() => {
-                    card1.classList.remove('flipped');
-                    card2.classList.remove('flipped');
-                    flippedCards = [];
-                }, 500);
+                    colorSequenceDiv.children[index].style.backgroundColor = color;
+                    setTimeout(() => {
+                        colorSequenceDiv.children[index].style.backgroundColor = '';
+                    }, 500);
+                }, index * 1000);
+            });
+
+            setTimeout(() => {
+                messageDiv.innerText = 'Sua vez!';
+            }, colorSequence.length * 1000);
+        }
+
+        function startGame() {
+            colorSequence.length = 0;
+            playerSequence.length = 0;
+            isGameOver = false;
+            messageDiv.innerText = '';
+
+            displayColorSequence();
+        }
+
+        function checkColor(color) {
+            if (isGameOver) return;
+
+            playerSequence.push(color);
+
+            if (playerSequence.length === colorSequence.length) {
+                if (JSON.stringify(playerSequence) === JSON.stringify(colorSequence)) {
+                    // Acertou a sequência
+                    messageDiv.innerText = 'Correto! Próxima rodada.';
+                    setTimeout(() => {
+                        startGame();
+                    }, 1000);
+                } else {
+                    // Errou a sequência
+                    messageDiv.innerText = 'Você errou! Pressione "Reiniciar Jogo" para tentar novamente.';
+                    isGameOver = true;
+                }
             }
         }
 
-        function endGame() {
-            isGameOver = true;
-            messageDiv.innerText = 'Parabéns! Você encontrou todos os pares.';
+        function createColorButtons() {
+            colors.forEach(color => {
+                const button = document.createElement('button');
+                button.classList.add('color-button');
+                button.style.backgroundColor = color;
+                button.addEventListener('click', () => checkColor(color));
+                colorSequenceDiv.appendChild(button);
+            });
         }
 
-        createBoard();
+        startButton.addEventListener('click', startGame);
+
+        createColorButtons();
     </script>
 </body>
 </html>
