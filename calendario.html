@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendário - Atlas FC</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1E1E1E; /* Preto */
+            color: #FFD700; /* Amarelo escuro */
+            scroll-behavior: smooth; /* Adiciona rolagem suave */
+        }
+
+        header {
+            background-color: #000;
+            color: #FFD700;
+            text-align: center;
+            padding: 10px;
+        }
+
+        nav {
+            background-color: #333;
+            color: #FFD700;
+            text-align: center;
+            padding: 10px;
+        }
+
+        nav a {
+            color: #FFD700;
+            text-decoration: none;
+            padding: 10px;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+
+        section {
+            padding: 20px;
+        }
+
+        footer {
+            background-color: #000;
+            color: #FFD700;
+            text-align: center;
+            padding: 10px;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Atlas Futebol Clube</h1>
+    </header>
+
+    <nav>
+        <a class="nav-link" href="#home">Home</a>
+        <a class="nav-link" href="#sobre">Sobre</a>
+        <a class="nav-link" href="calendario.html">Calendário</a>
+        <a class="nav-link" href="#equipe">Equipe</a>
+        <a class="nav-link" href="contato_equipe.html">Contato da Equipe</a>
+    </nav>
+
+    <section id="calendario">
+        <h2>Calendário do Atlas FC</h2>
+        <!-- Adicione aqui o conteúdo do calendário -->
+        <p>Adicione aqui as informações do calendário, como partidas, datas, etc.</p>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Atlas Futebol Clube. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        document.querySelectorAll('.nav-link').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                if (this.getAttribute('href') === 'calendario.html' || this.getAttribute('href') === 'contato_equipe.html') {
+                    // Se clicar em "Calendário" ou "Contato da Equipe", redireciona para a página correspondente
+                    window.location.href = this.getAttribute('href');
+                } else {
+                    // Para outras abas, rola suavemente para a seção correspondente
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
