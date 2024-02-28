@@ -59,7 +59,7 @@
 
     <nav>
         <a class="nav-link" href="index.html">Home</a>
-        <a class="nav-link" href="historia.html">Sobre</a>
+        <a class="nav-link" href="historia.html">Sobre</a> <!-- Alterado para link direto para história.html -->
         <a class="nav-link" href="calendario.html">Calendário</a>
         <a class="nav-link" href="contato_equipe.html">Contato da Equipe</a>
         <a class="nav-link" href="jogo.html">Jogo</a> <!-- Nova aba para o jogo -->
@@ -93,10 +93,8 @@
                         behavior: 'smooth'
                     });
                 } else {
-                    // Para outras abas, rola suavemente para a seção correspondente
-                    document.querySelector(this.getAttribute('href')).scrollIntoView({
-                        behavior: 'smooth'
-                    });
+                    // Para outras abas, redireciona para a página correspondente
+                    window.location.href = this.getAttribute('href');
                 }
             });
         });
