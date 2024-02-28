@@ -59,7 +59,7 @@
 
     <nav>
         <a class="nav-link" href="index.html">Home</a>
-        <a class="nav-link" href="historia.html">Sobre</a>
+        <a class="nav-link" href="historia.html">Sobre</a> <!-- Alterado para link direto para historia.html -->
         <a class="nav-link" href="calendario.html">Calendário</a>
         <a class="nav-link" href="contato_equipe.html">Contato da Equipe</a>
         <a class="nav-link" href="FECHADO">FECHADO</a> <!-- Nova aba para o jogo -->
@@ -82,7 +82,10 @@
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
 
-                if (this.getAttribute('href') === 'index.html') {
+                if (this.getAttribute('href') === 'historia.html') {
+                    // Se clicar em "Sobre", redireciona para a página história.html
+                    window.location.href = 'historia.html';
+                } else if (this.getAttribute('href') === 'index.html') {
                     // Se clicar em "Home", redireciona para a tela inicial
                     window.location.href = 'index.html';
                 } else if (this.getAttribute('href') === 'calendario.html' || this.getAttribute('href') === 'contato_equipe.html') {
